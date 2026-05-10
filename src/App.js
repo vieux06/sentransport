@@ -9,6 +9,7 @@ import Footer from './Footer';
 function App() {
   const [recherche, setRecherche] = useState("");
   const [ligneSelectionnee, setLigneSelectionnee] = useState(null);
+  const [nbRecherches, setNbRecherches] = useState(0);
 
   const lignes = [
     { id: 1, numero: "1", depart: "Parcelles Assainies",
@@ -45,6 +46,11 @@ function App() {
     l.numero.includes(recherche)
   );
 
+  function handleRecherche(valeur) {
+    setRecherche(valeur);
+    setNbRecherches(n => n + 1);
+  }
+
   function handleClickLigne(ligne) {
     if (ligneSelectionnee && ligneSelectionnee.id === ligne.id) {
       setLigneSelectionnee(null);
@@ -57,10 +63,18 @@ function App() {
     <div className="App">
       <Header />
       <main className="contenu">
-        <Recherche valeur={recherche} onChange={setRecherche} />
+        <p className="compteur-recherche">
+          Vous avez effectué {nbRecherches} recherche{nbRecherches > 1 ? 's' : ''}
+        </p>
+        <Recherche valeur={recherche} onChange={handleRecherche} />
         <p className="resultat-recherche">
           {lignesFiltrees.length} ligne{lignesFiltrees.length > 1 ? 's' : ''} trouvee{lignesFiltrees.length > 1 ? 's' : ''}
         </p>
+        {lignesFiltrees.length === 0 && (
+          <p className="aucun-resultat">
+            Aucune ligne trouvée pour "{recherche}"
+          </p>
+        )}
         {lignesFiltrees.map(ligne => (
           <LigneBus
             key={ligne.id}
